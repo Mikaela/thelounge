@@ -702,4 +702,28 @@ Vivamus bibendum vulputate tincidunt. Sed vitae ligula felis.`;
 
 		this.irc.on("msg:preview", cb);
 	});
+
+	it("should hide errors for links without protocol", function(done) {
+		const domain = `thelounge-fail-dns-${Date.now()}.py`;
+		const message = this.irc.createMessage({text: `Test url ${domain} yay!`});
+
+		link(this.irc, this.network.channels[0], message);
+
+		expect(message.previews).to.deep.equal([
+			{
+				type: "loading",
+				head: "",
+				body: "",
+				thumb: "",
+				size: -1,
+				link: `http://${domain}`,
+				shown: true,
+			},
+		]);
+
+		setTimeout(() => {
+			expect(message.previews).to.be.empty;
+			done();
+		}, 1000);
+	});
 });

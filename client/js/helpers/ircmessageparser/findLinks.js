@@ -53,6 +53,7 @@ function findLinks(text) {
 		start: url.index,
 		end: url.lastIndex,
 		link: url.url,
+		raw: url.raw,
 	}));
 }
 

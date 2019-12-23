@@ -11,6 +11,7 @@ const storage = require("../storage");
 const currentFetchPromises = new Map();
 const imageTypeRegex = /^image\/.+/;
 const mediaTypeRegex = /^(audio|video)\/.+/;
+const fullUrlRegex = /^(?:http:\/\/|https:\/\/|\/\/|www\.)/;
 
 module.exports = function(client, chan, msg) {
 	if (!Helper.config.prefetch) {
@@ -58,6 +59,10 @@ module.exports = function(client, chan, msg) {
 				parse(msg, chan, preview, res, client);
 			})
 			.catch((err) => {
+				if (!fullUrlRegex.test(link.raw)) {
+					return removePreview(msg, preview);
+				}
+
 				preview.type = "error";
 				preview.error = "message";
 				preview.message = err.message;
